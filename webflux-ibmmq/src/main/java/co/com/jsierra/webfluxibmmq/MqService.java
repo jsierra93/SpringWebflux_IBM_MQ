@@ -5,11 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Slf4j
-@Service
+@EnableAsync
+@Component
 public class MqService {
 
     @Autowired
@@ -19,9 +22,11 @@ public class MqService {
     private String queueName;
 
     public Mono<String> sendMessage(String message) {
-        jmsTemplate.convertAndSend(queueName, message);
-        log.info("sendMessage:  {}", message);
-        return Mono.just(message);
+        return Mono.defer(() -> {
+            jmsTemplate.convertAndSend(queueName, message);
+            log.info("sendMessage:  {}", message);
+            return Mono.just(message);
+        });
     }
 
     /*
@@ -33,7 +38,8 @@ public class MqService {
         return Mono.just(message);
     }
 
-    @JmsListener(destination = "${ibm-mq.queue}")
+     @Async("threadPoolTaskExecutor")
+     @JmsListener(destination = "${ibm-mq.queue}")
     public void readMessage(String message) {
         log.info("receivedMessage: {}", message);
     }

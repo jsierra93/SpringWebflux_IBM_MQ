@@ -10,7 +10,7 @@ ibm:
     channel: DEV.ADMIN.SVRCONN
     conn-name: localhost(1414)
     user: admin
-    password: passw0rd
+    password: dev1234
 
 ibm-mq:
   queue: DEV.QUEUE.1

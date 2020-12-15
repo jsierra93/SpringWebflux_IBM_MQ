@@ -8,4 +8,23 @@ services:
     environment:
       - LICENSE=accept
       - MQ_QMGR_NAME=QM1
+      - MQ_ADMIN_PASSWORD=dev1234
+    #stdin_open: true
+    #tty: true
+    restart: always
 
+
+  service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8085:8085"
+      - "9010:9010"
+    restart: always
+    environment:
+      - IBM_MQ_CONN-NAME=ibmmq-local(1414)
+      # Parametros para monitorear contenedor con visualvm
+      - JAVA_TOOL_OPTIONS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9010 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=localhost -Dcom.sun.management.jmxremote.rmi.port=9010
+    depends_on:
+      - ibmmq-local
