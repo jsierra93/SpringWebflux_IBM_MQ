@@ -1,0 +1,16 @@
+server:
+  port: 8085
+spring:
+  application:
+    name: webflux-ibmmq
+
+ibm:
+  mq:
+    queue-manager: QM1
+    channel: DEV.ADMIN.SVRCONN
+    conn-name: localhost(1414)
+    user: admin
+    password: passw0rd
+
+ibm-mq:
+  queue: DEV.QUEUE.1
